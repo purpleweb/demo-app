@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+
+  demoapp:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    depends_on:
+      - demodb
+    ports:
+      - 8888:5000
+    networks:
+      - demonetwork
+    environment:
+      - DB_HOST=demodb
+      - DB_PASS=Password123!
+    volumes:
+      - ./app:/app
+
+  demodb:
+    image: mariadb
+    ports:
+      - 3306:3306
+    networks:
+      - demonetwork
+    environment:
+      - MARIADB_ROOT_PASSWORD=Password123!
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/1.sql
+
+networks:
+  demonetwork:
